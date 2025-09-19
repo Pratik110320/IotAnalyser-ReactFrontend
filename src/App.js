@@ -51,7 +51,7 @@ import 'chartjs-adapter-moment';
 import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-
+import AnomaliesPage from './pages/AnomaliesPage';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale);
