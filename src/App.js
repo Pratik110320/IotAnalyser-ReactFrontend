@@ -1,4 +1,7 @@
+
+
 import React, { useState, useEffect, createContext, useContext, useMemo } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link as RouterLink, Navigate } from 'react-router-dom';
 import {
   ChakraProvider,
   extendTheme,
@@ -49,6 +52,7 @@ import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
+
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale);
 
@@ -86,7 +90,8 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  // const [token, setToken] = useState(() => localStorage.getItem("token"));
+    const [token, setToken] = useState(() => "dummy-token");
   const toast = useToast();
 
   useEffect(() => {
@@ -138,19 +143,19 @@ const AuthProvider = ({ children }) => {
 };
 
 const useAuth = () => useContext(AuthContext);
-
-// --- WEBSOCKET CONTEXT ---
+// --- WebSocket Context (Updated for Alerts) ---
 const WebSocketContext = createContext();
 
 const WebSocketProvider = ({ children }) => {
   const [sensorData, setSensorData] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [simulatorStatus, setSimulatorStatus] = useState({ isRunning: false, runningDeviceIds: [] });
   const [isConnected, setIsConnected] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
     const client = new Client({
-      webSocketFactory: () => new SockJS("https://iotanalyser-simulator.onrender.com/ws-sensor-data"),
+      webSocketFactory: () => new SockJS(process.env.REACT_APP_API_BASE_URL + "/ws-sensor-data"),
       onConnect: () => {
         setIsConnected(true);
         client.subscribe("/topic/sensor-data", (message) => {
@@ -161,6 +166,18 @@ const WebSocketProvider = ({ children }) => {
           const status = JSON.parse(message.body);
           setSimulatorStatus(status);
         });
+        // Subscribe to the alerts topic
+        client.subscribe("/topic/alerts", (message) => {
+          const alertMessage = message.body;
+          setAlerts((prev) => [alertMessage, ...prev.slice(0, 4)]); // Keep last 5 alerts
+          toast({
+            title: "New Alert!",
+            description: alertMessage,
+            status: "warning",
+            duration: 9000,
+            isClosable: true,
+          });
+        });
       },
       onDisconnect: () => setIsConnected(false),
       onStompError: () => setIsConnected(false),
@@ -169,7 +186,7 @@ const WebSocketProvider = ({ children }) => {
 
     client.activate();
     return () => client.deactivate();
-  }, []);
+  }, [toast]);
   
   const startSimulator = async () => {
       try {
@@ -189,8 +206,8 @@ const WebSocketProvider = ({ children }) => {
       }
   }
 
-  return (
-    <WebSocketContext.Provider value={{ sensorData, simulatorStatus, isConnected, startSimulator, stopSimulator }}>
+return (
+    <WebSocketContext.Provider value={{ sensorData, alerts, simulatorStatus, isConnected, startSimulator, stopSimulator }}>
       {children}
     </WebSocketContext.Provider>
   );
@@ -253,21 +270,32 @@ const useAnalytics = () => {
 };
 
 // --- UI COMPONENTS ---
-const Navbar = ({ setPage }) => {
+// --- Navbar (Updated for React Router) ---
+const Navbar = () => {
   const { user, logout } = useAuth();
   return (
     <Flex as="nav" align="center" justify="space-between" wrap="wrap" p={6} bg="brand.800" color="white" borderBottom="1px" borderColor="brand.700">
-      <Flex align="center" mr={5}><Link onClick={() => setPage('landing')} fontSize="xl" fontWeight="bold">IoT Analyser</Link></Flex>
-      {user && <HStack spacing={4}>
-        <Link onClick={() => setPage('dashboard')}>Dashboard</Link>
-        <Link onClick={() => setPage('devices')}>Devices</Link>
-        <Link onClick={() => setPage('sensors')}>Sensors</Link>
-        <Link onClick={() => setPage('analytics')}>Analytics</Link>
-      </HStack>}
-      <Box>{user ? <Button onClick={() => { logout(); setPage('landing'); }} colorScheme="purple">Logout</Button> : <Button onClick={() => setPage('auth')} colorScheme="blue">Login / Register</Button>}</Box>
+      <Flex align="center" mr={5}><Link as={RouterLink} to="/" fontSize="xl" fontWeight="bold">IoT Analyser</Link></Flex>
+      {user && (
+        <HStack spacing={4}>
+          <Link as={RouterLink} to="/dashboard">Dashboard</Link>
+          <Link as={RouterLink} to="/devices">Devices</Link>
+          <Link as={RouterLink} to="/sensors">Sensors</Link>
+          <Link as={RouterLink} to="/anomalies">Anomalies</Link>
+          <Link as={RouterLink} to="/analytics">Analytics</Link>
+        </HStack>
+      )}
+      <Box>
+        {user ? (
+          <Button as={RouterLink} to="/" onClick={logout} colorScheme="purple">Logout</Button>
+        ) : (
+          <Button as={RouterLink} to="/auth" colorScheme="blue">Login / Register</Button>
+        )}
+      </Box>
     </Flex>
   );
 };
+
 
 const Footer = () => <Box as="footer" p={6} bg="brand.800" color="gray.400" textAlign="center" mt={10}><Text>&copy; {new Date().getFullYear()} IoT Analyser. All rights reserved.</Text></Box>;
 
@@ -381,32 +409,30 @@ const AuthPage = ({ setPage }) => {
 
 // --- MAIN APP ---
 function App() {
-  const [page, setPage] = useState('landing');
-  
-  const renderPage = () => {
-    switch(page) {
-      case 'dashboard': return <DashboardPage />;
-      case 'devices': return <DevicesPage />;
-      case 'sensors': return <SensorDataPage />;
-      case 'analytics': return <AnalyticsPage />;
-      case 'auth': return <AuthPage setPage={setPage}/>;
-      default: return <LandingPage setPage={setPage}/>;
-    }
-  }
-
   return (
     <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <WebSocketProvider>
+      <Router>
+        <AuthProvider>
+          <WebSocketProvider>
             <Box>
-                <Navbar setPage={setPage}/>
-                <Box as="main" minH="calc(100vh - 150px)">
-                    {renderPage()}
-                </Box>
-                <Footer />
+              <Navbar />
+              <Box as="main" minH="calc(100vh - 150px)">
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/devices" element={<DevicesPage />} />
+                  <Route path="/sensors" element={<SensorDataPage />} />
+                  <Route path="/anomalies" element={<AnomaliesPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </Box>
+              <Footer />
             </Box>
-        </WebSocketProvider>
-      </AuthProvider>
+          </WebSocketProvider>
+        </AuthProvider>
+      </Router>
     </ChakraProvider>
   );
 }

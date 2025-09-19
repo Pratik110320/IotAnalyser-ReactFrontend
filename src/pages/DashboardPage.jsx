@@ -6,7 +6,8 @@ import StatCard from "../components/StatCard";
 import { useSensorData } from "../hooks/useSensorData";
 import { useDevices } from "../hooks/useDevices";
 import { FiCpu, FiAlertTriangle, FiActivity } from "react-icons/fi";
-
+import Alerts from '../components/Alerts';
+import WeatherCard from '../components/WeatherCard';
 const DashboardPage = () => {
   const { sensorData, anomalies } = useSensorData();
   const { devices } = useDevices();
@@ -32,6 +33,8 @@ const DashboardPage = () => {
         <GridItem colSpan={{ base: 12, lg: 4 }}>
           <DeviceStatus devices={devices} />
           <SimulatorControl />
+          <Alerts />
+          <WeatherCard />
         </GridItem>
       </Grid>
     </Box>

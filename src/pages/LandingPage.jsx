@@ -44,7 +44,7 @@ const LandingPage = () => {
             as={RouterLink}
             to="/dashboard"
             size="lg"
-            bgGradient="linear(to-r, blue.400, purple.500)"
+            bgGradient="linear(to-r, blue.800, purple.900)"
             _hover={{ bgGradient: "linear(to-r, blue.500, purple.600)" }}
             rightIcon={<FiArrowRight />}
           >
