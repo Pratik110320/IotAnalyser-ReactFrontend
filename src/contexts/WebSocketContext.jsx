@@ -49,7 +49,7 @@ export const WebSocketProvider = ({ children }) => {
   
   const startSimulator = async () => {
       try {
-        await api.post('/api/simulator/startAll');
+        await api.post('/simulator/startAll');
         toast({ title: "Simulator Started", status: "success", isClosable: true });
       } catch (e) {
         toast({ title: "Failed to Start Simulator", status: "error", isClosable: true });
@@ -58,7 +58,7 @@ export const WebSocketProvider = ({ children }) => {
 
   const stopSimulator = async () => {
       try {
-        await api.post('/api/simulator/stopAll');
+        await api.post('/simulator/stopAll');
         toast({ title: "Simulator Stopped", status: "info", isClosable: true });
       } catch (e) {
         toast({ title: "Failed to Stop Simulator", status: "error", isClosable: true });

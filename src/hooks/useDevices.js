@@ -5,7 +5,7 @@ export const useDevices = () => {
   const [devices, setDevices] = useState([]);
 
   const fetchDevices = async () => {
-    const { data } = await api.get("/api/device/detail");
+    const { data } = await api.get("/device/detail");
     setDevices(data);
   };
 
@@ -14,17 +14,17 @@ export const useDevices = () => {
   }, []);
 
   const addDevice = async (device) => {
-    await api.post("/api/device", device);
+    await api.post("/device", device);
     fetchDevices();
   };
 
   const updateDevice = async (device) => {
-    await api.put(`api/device/${device.deviceId}`, device);
+    await api.put(`/device/${device.deviceId}`, device);
     fetchDevices();
   };
 
   const deleteDevice = async (id) => {
-    await api.delete(`/api/device/${id}`);
+    await api.delete(`/device/${id}`);
     fetchDevices();
   };
 

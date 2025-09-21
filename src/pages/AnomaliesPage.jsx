@@ -1,8 +1,9 @@
+// src/pages/AnomaliesPage.jsx
 import React, { useMemo } from 'react';
 import { Box, Heading, Text, Flex } from "@chakra-ui/react";
-import { useSensorData } from '../hooks/useSensorData'; // Assuming useSensorData is in its own file or App.js
-import SensorDataTable from '../components/SensorDataTable'; // Reuse the existing component
-import { useAuth } from '../contexts/AuthContext'; // Assuming AuthContext is in its own file or App.js
+import { useSensorData } from '../hooks/useSensorData';
+import SensorDataTable from '../components/SensorDataTable';
+import { useAuth } from '../contexts/AuthContext';
 
 const AnomaliesPage = () => {
   const { sensorData } = useSensorData();
