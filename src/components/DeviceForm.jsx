@@ -21,11 +21,15 @@ const DeviceForm = ({ isOpen, onClose, onSubmit, device }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-    onClose();
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const dataToSubmit = { ...formData };
+  if (!device) {
+    delete dataToSubmit.status;
+  }
+  onSubmit(dataToSubmit);
+  onClose();
+};
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
