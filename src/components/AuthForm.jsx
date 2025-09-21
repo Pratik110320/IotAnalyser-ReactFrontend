@@ -1,17 +1,23 @@
 import { Button, FormControl, FormLabel, Input, VStack } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const AuthForm = ({ isLogin, onSubmit }) => {
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    const success = await onSubmit(formData);
+    if (success && isLogin) {
+      navigate("/dashboard");
+    }
   };
 
   return (
