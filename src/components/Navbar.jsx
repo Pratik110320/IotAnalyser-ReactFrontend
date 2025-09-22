@@ -40,9 +40,11 @@ const Navbar = () => {
           {user ? (
             <Button type="primary" danger onClick={logout}>Logout</Button>
           ) : (
-            <Button type="primary" as={Link} href="/auth">
-              Login
-            </Button>
+            <Link to="/auth">
+              <Button type="primary">
+                Login
+              </Button>
+            </Link>
           )}
         </div>
       </Flex>

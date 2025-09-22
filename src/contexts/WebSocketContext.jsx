@@ -15,7 +15,7 @@ export const WebSocketProvider = ({ children }) => {
 
   useEffect(() => {
     const client = new Client({
-      webSocketFactory: () => new SockJS(process.env.REACT_APP_API_BASE_URL + "/ws-sensor-data"),
+      webSocketFactory: () => new SockJS(`${process.env.REACT_APP_API_BASE_URL}/ws-sensor-data`),
       onConnect: () => {
         setIsConnected(true);
 
@@ -61,21 +61,21 @@ export const WebSocketProvider = ({ children }) => {
 
   const startSimulator = async () => {
     try {
-      await api.post("/simulator/startAll");
+      await api.post("/api/simulator/startAll");
       notification.success({ message: "Simulator Started" });
     } catch (e) {
       console.error(e);
-      notification.error({ message: "Failed to Start Simulator" });
+      notification.error({ message: "Failed to Start Simulator", description: e.message });
     }
   };
 
   const stopSimulator = async () => {
     try {
-      await api.delete("/simulator/stopAll");
+      await api.delete("/api/simulator/stopAll");
       notification.info({ message: "Simulator Stopped" });
     } catch (e) {
       console.error(e);
-      notification.error({ message: "Failed to Stop Simulator" });
+      notification.error({ message: "Failed to Stop Simulator", description: e.message });
     }
   };
 
@@ -87,3 +87,4 @@ export const WebSocketProvider = ({ children }) => {
 };
 
 export const useWebSocket = () => useContext(WebSocketContext);
+

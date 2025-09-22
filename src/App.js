@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, Layout, theme } from 'antd';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,6 +14,11 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import AuthPage from './pages/AuthPage';
 
 const { Content } = Layout;
+
+const PrivateRoute = ({ children }) => {
+  const { token } = useAuth();
+  return token ? children : <Navigate to="/auth" />;
+};
 
 function App() {
   return (
@@ -36,11 +41,11 @@ function App() {
                 <div style={{ background: '#1a202c', padding: 24, minHeight: 'calc(100vh - 180px)' }}>
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/devices" element={<DevicesPage />} />
-                    <Route path="/sensors" element={<SensorDataPage />} />
-                    <Route path="/anomalies" element={<AnomaliesPage />} />
-                    <Route path="/analytics" element={<AnalyticsPage />} />
+                    <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+                    <Route path="/devices" element={<PrivateRoute><DevicesPage /></PrivateRoute>} />
+                    <Route path="/sensors" element={<PrivateRoute><SensorDataPage /></PrivateRoute>} />
+                    <Route path="/anomalies" element={<PrivateRoute><AnomaliesPage /></PrivateRoute>} />
+                    <Route path="/analytics" element={<PrivateRoute><AnalyticsPage /></PrivateRoute>} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="*" element={<Navigate to="/" />} />
                   </Routes>
@@ -56,3 +61,4 @@ function App() {
 }
 
 export default App;
+

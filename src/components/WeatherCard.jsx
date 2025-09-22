@@ -9,8 +9,9 @@ const WeatherCard = () => {
   const { sensorData } = useSensorData();
 
   const weatherData = useMemo(() => {
-    const temp = sensorData.slice().reverse().find(d => d.deviceId === 1 && d.sensorType === 'TEMPERATURE');
-    const humidity = sensorData.slice().reverse().find(d => d.deviceId === 1 && d.sensorType === 'HUMIDITY');
+    // Get the latest temperature and humidity readings, regardless of device
+    const temp = sensorData.find(d => d.sensorType === 'TEMPERATURE');
+    const humidity = sensorData.find(d => d.sensorType === 'HUMIDITY');
     return { temp, humidity };
   }, [sensorData]);
 
@@ -40,7 +41,7 @@ const WeatherCard = () => {
   }
 
   return (
-    <Card title="Current Weather (Nagpur)" bordered={false}>
+    <Card title="Latest Weather Reading" bordered={false}>
         <List
             dataSource={data}
             renderItem={item => (
@@ -54,3 +55,4 @@ const WeatherCard = () => {
 };
 
 export default WeatherCard;
+

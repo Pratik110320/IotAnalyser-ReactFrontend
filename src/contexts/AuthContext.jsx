@@ -13,21 +13,38 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setUser({ email: "user@example.com" }); // Placeholder user
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser && storedUser !== 'undefined') {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.error("Failed to parse user from localStorage", error);
+        // Clear potentially corrupted data
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+      }
     }
   }, [token]);
 
   const login = async (credentials) => {
     try {
       const { data } = await api.post("/api/auth/authenticate", credentials);
-      localStorage.setItem("token", data);
-      api.defaults.headers.common["Authorization"] = `Bearer ${data}`;
-      setToken(data);
-      setUser({ email: credentials.username });
-      message.success("Login Successful");
-      return true;
+      if (data.token && data.user) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+        setToken(data.token);
+        setUser(data.user);
+        message.success("Login Successful");
+        return true;
+      } else {
+        throw new Error("Invalid response from server during login.");
+      }
     } catch (error) {
-      message.error("Login Failed: Invalid credentials.");
+      message.error("Login Failed: Invalid credentials or server error.");
       return false;
     }
   };
@@ -49,10 +66,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     delete api.defaults.headers.common["Authorization"];
     setToken(null);
     setUser(null);
     message.info("Logged Out");
+    navigate('/');
   };
 
   return (
@@ -63,3 +82,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { message } from "antd";
 
 export const useDevices = () => {
   const [devices, setDevices] = useState([]);
 
   const fetchDevices = async () => {
-    const { data } = await api.get("/device/detail");
-    setDevices(data);
+    try {
+      const { data } = await api.get("/api/device/detail");
+      setDevices(data);
+    } catch (error) {
+      message.error("Failed to fetch devices.");
+      console.error("Failed to fetch devices:", error);
+    }
   };
 
   useEffect(() => {
@@ -14,19 +20,38 @@ export const useDevices = () => {
   }, []);
 
   const addDevice = async (device) => {
-    await api.post("/device", device);
-    fetchDevices();
+    try {
+      await api.post("/api/device", device);
+      fetchDevices();
+      message.success("Device added successfully.");
+    } catch (error) {
+      message.error("Failed to add device.");
+      console.error("Failed to add device:", error);
+    }
   };
 
   const updateDevice = async (device) => {
-    await api.put(`/device/${device.deviceId}`, device);
-    fetchDevices();
+    try {
+      await api.put(`/api/device/${device.deviceId}`, device);
+      fetchDevices();
+      message.success("Device updated successfully.");
+    } catch (error) {
+      message.error("Failed to update device.");
+      console.error("Failed to update device:", error);
+    }
   };
 
   const deleteDevice = async (id) => {
-    await api.delete(`/device/${id}`);
-    fetchDevices();
+    try {
+      await api.delete(`/api/device/${id}`);
+      fetchDevices();
+      message.success("Device deleted successfully.");
+    } catch (error) {
+      message.error("Failed to delete device.");
+      console.error("Failed to delete device:", error);
+    }
   };
 
   return { devices, addDevice, updateDevice, deleteDevice };
 };
+

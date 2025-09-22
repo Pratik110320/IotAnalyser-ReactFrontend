@@ -16,9 +16,11 @@ const LandingPage = () => {
           <Paragraph style={{ color: 'white', fontSize: '18px' }}>
             Unlock the power of your IoT data. Real-time insights, anomaly detection, and powerful analytics at your fingertips.
           </Paragraph>
-          <Button type="primary" size="large" icon={<ArrowRightOutlined />} href="/auth" component={RouterLink}>
-            Get Started
-          </Button>
+          <RouterLink to="/auth">
+            <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
+              Get Started
+            </Button>
+          </RouterLink>
         </div>
       </div>
 
