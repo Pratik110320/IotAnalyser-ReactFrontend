@@ -1,22 +1,19 @@
 import { Box, Heading, Button } from "@chakra-ui/react";
-import { useSensorData } from "../hooks/useSensorData";
+import { useWebSocket } from "../contexts/WebSocketContext";
 import SensorDataTable from "../components/SensorDataTable";
 import SensorDataForm from "../components/SensorDataForm";
 import { useState } from "react";
-import api from "../services/api"; // Import the api service
+import api from "../services/api";
 
 const SensorDataPage = () => {
-  const { sensorData, setSensorData } = useSensorData(); // Assuming you can update sensorData from your hook
+  const { sensorData, setSensorData } = useWebSocket();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleAddSensorData = async (data) => {
     try {
       const response = await api.post("/sensor", data);
-      // Assuming the API returns the new sensor data, you might want to add it to your local state
-      // If your useSensorData hook manages this, you might call a function from there
-      // For now, let's just log it.
+      setSensorData((prev) => [...prev, response.data]);
       console.log("Sensor data added:", response.data);
-      // You might want to refetch the sensor data here or update the state directly
     } catch (error) {
       console.error("Failed to add sensor data", error);
     }

@@ -1,4 +1,13 @@
+// ✅ Only import components you actually need from Chakra
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+
+// ✅ Import keyframes ONLY from Emotion
+import { keyframes } from "@emotion/react";
+
+const fadeIn = keyframes`
+  from { background-color: #4A5568; }
+  to   { background-color: transparent; }
+`;
 
 const SensorDataTable = ({ sensorData }) => {
   return (
@@ -14,8 +23,11 @@ const SensorDataTable = ({ sensorData }) => {
         </Tr>
       </Thead>
       <Tbody>
-        {sensorData.map((data) => (
-          <Tr key={data.id}>
+        {sensorData.map((data, index) => (
+          <Tr
+            key={data.id}
+            animation={index === sensorData.length - 1 ? `${fadeIn} 1s ease-out` : ""}
+          >
             <Td>{data.id}</Td>
             <Td>{data.deviceId}</Td>
             <Td>{data.sensorType}</Td>

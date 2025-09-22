@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -8,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -35,6 +37,10 @@ export const AuthProvider = ({ children }) => {
     try {
         await api.post("/api/auth/register", credentials);
         toast({ title: "Registration Successful", description: "You can now log in.", status: "success", duration: 3000, isClosable: true });
+        const loginSuccess = await login(credentials);
+        if (loginSuccess) {
+            navigate('/dashboard');
+        }
         return true;
     } catch (error) {
         toast({ title: "Registration Failed", description: "Email might already be in use.", status: "error", duration: 3000, isClosable: true });
