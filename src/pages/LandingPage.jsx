@@ -22,11 +22,7 @@ const LandingPage = () => {
                 Go to Dashboard
               </Button>
             </RouterLink>
-            <RouterLink to="/auth" state={{ defaultTab: 'login' }}>
-              <Button size="large" type="default" style={{ background: 'transparent', color: 'white', borderColor: 'white' }}>
-                Login
-              </Button>
-            </RouterLink>
+          
           </Space>
         </div>
       </div>
