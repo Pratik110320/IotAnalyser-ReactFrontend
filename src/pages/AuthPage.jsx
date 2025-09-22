@@ -1,23 +1,22 @@
-import { Card, Typography, Tabs, Alert } from "antd";
+import { Card, Typography, Tabs } from "antd";
 import AuthForm from "../components/AuthForm";
 import { useAuth } from "../contexts/AuthContext";
 import { useLocation } from "react-router-dom";
 import { LoginOutlined, UserAddOutlined } from '@ant-design/icons';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const { Title } = Typography;
 
 const AuthPage = () => {
     const { login, register } = useAuth();
     const location = useLocation();
-    const [activeTab, setActiveTab] = useState('login');
+    const [activeTab, setActiveTab] = useState(location.state?.defaultTab || 'login');
 
-    const handleRegister = async (credentials) => {
-      const success = await register(credentials);
-      if (success) {
-        setActiveTab('login'); // Switch to login tab on successful registration
-      }
-    };
+    useEffect(() => {
+        if (location.state?.defaultTab) {
+            setActiveTab(location.state.defaultTab);
+        }
+    }, [location.state]);
 
     const items = [
         {
@@ -38,7 +37,7 @@ const AuthPage = () => {
                 </span>
             ),
             key: 'register',
-            children: <AuthForm onSubmit={handleRegister} />,
+            children: <AuthForm onSubmit={register} />,
         },
     ];
 
@@ -48,7 +47,6 @@ const AuthPage = () => {
             <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>
                 IoT Analyser
             </Title>
-            {location.state?.fromLanding && <Alert message="Please log in to view the features of the app." type="info" showIcon style={{marginBottom: 24}} />}
             <Tabs 
               activeKey={activeTab} 
               onChange={setActiveTab} 

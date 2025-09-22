@@ -1,5 +1,5 @@
-import { Button, Row, Col, Card, Typography } from "antd";
-import { ArrowRightOutlined, WifiOutlined, FundOutlined, BarChartOutlined } from "@ant-design/icons";
+import { Button, Row, Col, Card, Typography, Space } from "antd";
+import { WifiOutlined, FundOutlined, BarChartOutlined } from "@ant-design/icons";
 import { Link as RouterLink } from "react-router-dom";
 import './LandingPage.css';
 
@@ -16,11 +16,18 @@ const LandingPage = () => {
           <Paragraph style={{ color: 'white', fontSize: '18px' }}>
             Unlock the power of your IoT data. Real-time insights, anomaly detection, and powerful analytics at your fingertips.
           </Paragraph>
-          <RouterLink to="/auth">
-            <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
-              Get Started
-            </Button>
-          </RouterLink>
+          <Space size="large" style={{ marginTop: '24px' }}>
+            <RouterLink to="/auth" state={{ defaultTab: 'register' }}>
+              <Button type="primary" size="large">
+                Go to Dashboard
+              </Button>
+            </RouterLink>
+            <RouterLink to="/auth" state={{ defaultTab: 'login' }}>
+              <Button size="large" type="default" style={{ background: 'transparent', color: 'white', borderColor: 'white' }}>
+                Login
+              </Button>
+            </RouterLink>
+          </Space>
         </div>
       </div>
 

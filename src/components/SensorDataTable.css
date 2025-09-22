@@ -7,12 +7,18 @@
   color: white;
 }
 
-/* fade animation similar to your keyframes */
+/* More visible animation for new rows */
 @keyframes fadeInRow {
-  from { background-color: rgba(74, 85, 104, 0.5); }
-  to   { background-color: transparent; }
+  0% {
+    background-color: rgba(123, 97, 255, 0.6); /* Use primary color for highlight */
+    transform: scale(1.01);
+  }
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
 }
 
 .animated-row {
-  animation: fadeInRow 1.5s ease-out;
+  animation: fadeInRow 2s ease-out;
 }

@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }) => {
         setToken(tokenString);
         setUser(userData);
         message.success("Login Successful");
+        navigate("/dashboard");
         return true;
       } else {
         throw new Error("Invalid response from server during login.");
@@ -98,8 +99,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (credentials) => {
     try {
         await api.post("/api/auth/register", credentials);
-        message.success("Registration Successful! Please log in.");
-        return true; 
+        message.success("Registration Successful! Logging you in...");
+        // Automatically log in after successful registration
+        return await login(credentials);
     } catch (error) {
         // Display the specific error message from the backend if available
         const errorMessage = error.response?.data?.message || error.response?.data || "Email might already be in use.";

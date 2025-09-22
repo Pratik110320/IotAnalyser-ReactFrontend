@@ -1,15 +1,11 @@
 import { Button, Form, Input } from "antd";
-import { useNavigate } from "react-router-dom";
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 
 const AuthForm = ({ isLogin, onSubmit }) => {
-  const navigate = useNavigate();
 
   const onFinish = async (values) => {
-    const success = await onSubmit(values);
-    if (success && isLogin) {
-      navigate("/dashboard");
-    }
+    // Navigation is now handled by the AuthContext after login/registration
+    await onSubmit(values);
   };
 
   return (
