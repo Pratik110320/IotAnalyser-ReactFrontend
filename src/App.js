@@ -15,8 +15,7 @@ import AnomaliesPage from './pages/AnomaliesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import Sidebar from './components/Sidebar';
-
+import Sidebar from './components/SideBar'; 
 const { Content, Sider } = Layout;
 
 const AppLayout = () => {
