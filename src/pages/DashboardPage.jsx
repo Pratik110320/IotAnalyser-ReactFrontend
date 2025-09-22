@@ -1,43 +1,56 @@
-import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
+import { Row, Col, Typography } from "antd";
 import DeviceStatus from "../components/DeviceStatus";
 import RealTimeChart from "../components/RealTimeChart";
 import SimulatorControl from "../components/SimulatorControl";
 import StatCard from "../components/StatCard";
 import { useSensorData } from "../hooks/useSensorData";
 import { useDevices } from "../hooks/useDevices";
-import { FiCpu, FiAlertTriangle, FiActivity } from "react-icons/fi";
+import { HddOutlined, AlertOutlined, LineChartOutlined } from "@ant-design/icons";
 import Alerts from '../components/Alerts';
 import WeatherCard from '../components/WeatherCard';
+
+const { Title } = Typography;
+
 const DashboardPage = () => {
   const { sensorData, anomalies } = useSensorData();
   const { devices } = useDevices();
 
   return (
-    <Box p={8} bg="brand.900" minH="100vh" color="white">
-      <Heading as="h2" size="2xl" mb={8}>
+    <div>
+      <Title level={2} style={{ marginBottom: '24px' }}>
         Dashboard
-      </Heading>
-      <Grid templateColumns="repeat(12, 1fr)" gap={8}>
-        <GridItem colSpan={{ base: 12, md: 4 }}>
-            <StatCard icon={FiCpu} label="Active Devices" value={devices.length} />
-        </GridItem>
-        <GridItem colSpan={{ base: 12, md: 4 }}>
-            <StatCard icon={FiAlertTriangle} label="Anomalies" value={anomalies} />
-        </GridItem>
-         <GridItem colSpan={{ base: 12, md: 4 }}>
-            <StatCard icon={FiActivity} label="Total Readings" value={sensorData.length} />
-        </GridItem>
-        <GridItem colSpan={{ base: 12, lg: 8 }}>
+      </Title>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} sm={12} md={8}>
+            <StatCard icon={<HddOutlined />} label="Active Devices" value={devices.length} />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+            <StatCard icon={<AlertOutlined />} label="Anomalies" value={anomalies} />
+        </Col>
+         <Col xs={24} sm={12} md={8}>
+            <StatCard icon={<LineChartOutlined />} label="Total Readings" value={sensorData.length} />
+        </Col>
+        <Col xs={24} lg={16}>
           <RealTimeChart sensorData={sensorData} />
-        </GridItem>
-        <GridItem colSpan={{ base: 12, lg: 4 }}>
-          <DeviceStatus devices={devices} />
-          <SimulatorControl />
-          <Alerts />
-          <WeatherCard />
-        </GridItem>
-      </Grid>
-    </Box>
+        </Col>
+        <Col xs={24} lg={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={24}>
+              <DeviceStatus devices={devices} />
+            </Col>
+            <Col span={24}>
+              <SimulatorControl />
+            </Col>
+            <Col span={24}>
+              <Alerts />
+            </Col>
+            <Col span={24}>
+              <WeatherCard />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </div>
   );
 };
 

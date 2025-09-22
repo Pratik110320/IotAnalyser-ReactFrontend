@@ -1,10 +1,12 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Layout } from "antd";
+
+const { Footer: AntFooter } = Layout;
 
 const Footer = () => {
   return (
-    <Box as="footer" p={6} bg="brand.800" color="white" textAlign="center">
-      <Text>&copy; {new Date().getFullYear()} IoT Analyser. All rights reserved.</Text>
-    </Box>
+    <AntFooter style={{ textAlign: 'center' }}>
+      IoT Analyser ©{new Date().getFullYear()}
+    </AntFooter>
   );
 };
 

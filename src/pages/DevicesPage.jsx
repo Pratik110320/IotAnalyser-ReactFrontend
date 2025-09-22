@@ -1,8 +1,11 @@
-import { Box, Button, Heading } from "@chakra-ui/react";
+import { Button, Typography } from "antd";
 import { useDevices } from "../hooks/useDevices";
 import DeviceTable from "../components/DeviceTable";
 import DeviceForm from "../components/DeviceForm";
 import { useState } from "react";
+import { PlusOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
 
 const DevicesPage = () => {
   const { devices, addDevice, updateDevice, deleteDevice } = useDevices();
@@ -20,11 +23,16 @@ const DevicesPage = () => {
   };
 
   return (
-    <Box p={8} bg="brand.900" minH="100vh" color="white">
-      <Heading as="h2" size="2xl" mb={8}>
+    <div>
+      <Title level={2} style={{ marginBottom: '24px' }}>
         Device Management
-      </Heading>
-      <Button onClick={() => setIsFormOpen(true)} colorScheme="blue" mb={8}>
+      </Title>
+      <Button 
+        type="primary" 
+        icon={<PlusOutlined />} 
+        onClick={() => setIsFormOpen(true)} 
+        style={{ marginBottom: '24px' }}
+      >
         Add Device
       </Button>
       <DeviceTable devices={devices} onEdit={handleEdit} onDelete={deleteDevice} />
@@ -34,7 +42,7 @@ const DevicesPage = () => {
         onSubmit={selectedDevice ? updateDevice : addDevice}
         device={selectedDevice}
       />
-    </Box>
+    </div>
   );
 };
 

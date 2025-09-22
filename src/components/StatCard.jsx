@@ -1,20 +1,16 @@
-import { Box, Flex, Icon, Text } from "@chakra-ui/react";
+import { Card, Statistic, Avatar } from "antd";
+import { RiseOutlined } from '@ant-design/icons';
 
 const StatCard = ({ icon, label, value }) => {
   return (
-    <Flex
-      align="center"
-      p={5}
-      bg="brand.800"
-      borderRadius="lg"
-      boxShadow="lg"
-    >
-      <Icon as={icon} w={10} h={10} color="blue.400" mr={4} />
-      <Box>
-        <Text fontSize="2xl" fontWeight="bold">{value}</Text>
-        <Text fontSize="sm" color="gray.400">{label}</Text>
-      </Box>
-    </Flex>
+    <Card bordered={false}>
+      <Statistic
+        title={label}
+        value={value}
+        prefix={<Avatar size="large" icon={icon} style={{ backgroundColor: '#7B61FF' }} />}
+        suffix={<RiseOutlined style={{ color: '#3f8600', marginLeft: '8px' }} />}
+      />
+    </Card>
   );
 };
 

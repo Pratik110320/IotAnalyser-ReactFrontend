@@ -1,34 +1,61 @@
-import { Table, Thead, Tbody, Tr, Th, Td, IconButton } from "@chakra-ui/react";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { Table, Button, Space, Tag } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+
+const getStatusColor = (status) => {
+    switch (status) {
+      case "ONLINE":
+        return "success";
+      case "OFFLINE":
+        return "warning";
+      default:
+        return "error";
+    }
+}
 
 const DeviceTable = ({ devices, onEdit, onDelete }) => {
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'deviceId',
+      key: 'deviceId',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'deviceName',
+      key: 'deviceName',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'deviceType',
+      key: 'deviceType',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => <Tag color={getStatusColor(status)}>{status}</Tag>
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space size="middle">
+          <Button icon={<EditOutlined />} onClick={() => onEdit(record)}>Edit</Button>
+          <Button icon={<DeleteOutlined />} danger onClick={() => onDelete(record.deviceId)}>Delete</Button>
+        </Space>
+      ),
+    },
+  ];
+
   return (
-    <Table variant="simple" colorScheme="whiteAlpha">
-      <Thead>
-        <Tr>
-          <Th>ID</Th>
-          <Th>Name</Th>
-          <Th>Type</Th>
-          <Th>Status</Th>
-          <Th>Actions</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {devices.map((device) => (
-          <Tr key={device.deviceId}>
-            <Td>{device.deviceId}</Td>
-            <Td>{device.deviceName}</Td>
-            <Td>{device.deviceType}</Td>
-            <Td>{device.status}</Td>
-            <Td>
-              <IconButton icon={<FiEdit />} onClick={() => onEdit(device)} mr={2} />
-              <IconButton icon={<FiTrash2 />} onClick={() => onDelete(device.deviceId)} />
-            </Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
+    <Table
+      columns={columns}
+      dataSource={devices}
+      rowKey="deviceId"
+      bordered
+    />
   );
 };
 
 export default DeviceTable;
+

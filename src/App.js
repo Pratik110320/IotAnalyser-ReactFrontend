@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ChakraProvider, extendTheme, Box } from "@chakra-ui/react";
+import { ConfigProvider, Layout, theme } from 'antd';
 import { AuthProvider } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import Navbar from './components/Navbar';
@@ -13,64 +13,45 @@ import AnomaliesPage from './pages/AnomaliesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import AuthPage from './pages/AuthPage';
 
-// --- THEME ---
-const theme = extendTheme({
-  styles: {
-    global: {
-      'html, body': {
-        backgroundColor: 'gray.900',
-        color: 'white',
-        lineHeight: 'tall',
-      },
-    },
-  },
-  colors: {
-    brand: {
-      900: "#1a202c",
-      800: "#2d3748",
-      700: "#4a5568",
-    },
-  },
-  fonts: {
-    heading: `'Inter', sans-serif`,
-    body: `'Inter', sans-serif`,
-  },
-  // Add keyframes to the theme
-  keyframes: {
-    gradient: {
-      "0%": { backgroundPosition: "0% 50%" },
-      "50%": { backgroundPosition: "100% 50%" },
-      "100%": { backgroundPosition: "0% 50%" },
-    },
-  },
-});
+const { Content } = Layout;
 
 function App() {
   return (
-    <ChakraProvider theme={theme}>
+    <ConfigProvider
+      theme={{
+        algorithm: theme.darkAlgorithm,
+        token: {
+          colorPrimary: '#7B61FF',
+          colorBgBase: '#1a202c',
+          colorBgContainer: '#2d3748',
+        },
+      }}
+    >
       <Router>
         <AuthProvider>
           <WebSocketProvider>
-            <Box>
+            <Layout style={{ minHeight: '100vh' }}>
               <Navbar />
-              <Box as="main" minH="calc(100vh - 150px)">
-                <Routes>
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/devices" element={<DevicesPage />} />
-                  <Route path="/sensors" element={<SensorDataPage />} />
-                  <Route path="/anomalies" element={<AnomaliesPage />} />
-                  <Route path="/analytics" element={<AnalyticsPage />} />
-                  <Route path="/auth" element={<AuthPage />} />
-                  <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
-              </Box>
+              <Content style={{ padding: '0 24px', marginTop: 24 }}>
+                <div style={{ background: '#1a202c', padding: 24, minHeight: 'calc(100vh - 180px)' }}>
+                  <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/devices" element={<DevicesPage />} />
+                    <Route path="/sensors" element={<SensorDataPage />} />
+                    <Route path="/anomalies" element={<AnomaliesPage />} />
+                    <Route path="/analytics" element={<AnalyticsPage />} />
+                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </div>
+              </Content>
               <Footer />
-            </Box>
+            </Layout>
           </WebSocketProvider>
         </AuthProvider>
       </Router>
-    </ChakraProvider>
+    </ConfigProvider>
   );
 }
 

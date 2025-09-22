@@ -1,17 +1,19 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Typography } from "antd";
 import { useAnalytics } from "../hooks/useAnalytics";
 import AnalyticsChart from "../components/AnalyticsChart";
+
+const { Title } = Typography;
 
 const AnalyticsPage = () => {
   const { analyticsData } = useAnalytics();
 
   return (
-    <Box p={8} bg="brand.900" minH="100vh" color="white">
-      <Heading as="h2" size="2xl" mb={8}>
+    <div>
+      <Title level={2} style={{ marginBottom: 24 }}>
         Analytics
-      </Heading>
+      </Title>
       <AnalyticsChart data={analyticsData} />
-    </Box>
+    </div>
   );
 };
 

@@ -1,9 +1,12 @@
-import { Box, Heading, Button } from "@chakra-ui/react";
+import { Typography, Button } from "antd";
 import { useWebSocket } from "../contexts/WebSocketContext";
 import SensorDataTable from "../components/SensorDataTable";
 import SensorDataForm from "../components/SensorDataForm";
 import { useState } from "react";
 import api from "../services/api";
+import { PlusOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
 
 const SensorDataPage = () => {
   const { sensorData, setSensorData } = useWebSocket();
@@ -12,7 +15,7 @@ const SensorDataPage = () => {
   const handleAddSensorData = async (data) => {
     try {
       const response = await api.post("/sensor", data);
-      setSensorData((prev) => [...prev, response.data]);
+      setSensorData((prev) => [response.data, ...prev]);
       console.log("Sensor data added:", response.data);
     } catch (error) {
       console.error("Failed to add sensor data", error);
@@ -20,11 +23,16 @@ const SensorDataPage = () => {
   };
 
   return (
-    <Box p={8} bg="brand.900" minH="100vh" color="white">
-      <Heading as="h2" size="2xl" mb={8}>
+    <div>
+      <Title level={2} style={{ marginBottom: 24 }}>
         Sensor Data
-      </Heading>
-      <Button onClick={() => setIsFormOpen(true)} colorScheme="blue" mb={8}>
+      </Title>
+      <Button 
+        type="primary" 
+        icon={<PlusOutlined />} 
+        onClick={() => setIsFormOpen(true)} 
+        style={{ marginBottom: 24 }}
+      >
         Add Sensor Data
       </Button>
       <SensorDataTable sensorData={sensorData} />
@@ -33,7 +41,7 @@ const SensorDataPage = () => {
         onClose={() => setIsFormOpen(false)}
         onSubmit={handleAddSensorData}
       />
-    </Box>
+    </div>
   );
 };
 

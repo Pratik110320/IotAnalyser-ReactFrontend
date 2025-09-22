@@ -1,25 +1,28 @@
 import React from 'react';
-import { Box, Heading, Text, VStack } from "@chakra-ui/react";
-import { useWebSocket } from '../contexts/WebSocketContext'; // Assuming WebSocketContext is exported from App.js or its own file
+import { Card, List, Typography } from "antd";
+import { useWebSocket } from '../contexts/WebSocketContext';
+import { WarningOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 
 const Alerts = () => {
   const { alerts } = useWebSocket();
 
   return (
-    <Box bg="brand.800" p={4} borderRadius="lg" mt={8}>
-      <Heading as="h3" size="lg" mb={4}>Recent Alerts</Heading>
-      <VStack align="stretch" spacing={2}>
-        {alerts.length > 0 ? (
-          alerts.map((alert, index) => (
-            <Text key={index} fontSize="sm" color="yellow.300">
+    <Card title="Recent Alerts" bordered={false}>
+      <List
+        dataSource={alerts}
+        renderItem={(alert, index) => (
+          <List.Item>
+            <Text type="warning">
+              <WarningOutlined style={{ marginRight: 8 }} />
               {alert}
             </Text>
-          ))
-        ) : (
-          <Text color="gray.400">No recent alerts.</Text>
+          </List.Item>
         )}
-      </VStack>
-    </Box>
+        locale={{ emptyText: "No recent alerts."}}
+      />
+    </Card>
   );
 };
 

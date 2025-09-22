@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { Box, Heading, Text, VStack, HStack, Icon } from "@chakra-ui/react";
+import { Card, List, Typography } from "antd";
 import { FiThermometer, FiDroplet } from "react-icons/fi";
 import { useSensorData } from '../hooks/useSensorData';
+
+const { Text } = Typography;
 
 const WeatherCard = () => {
   const { sensorData } = useSensorData();
@@ -12,28 +14,42 @@ const WeatherCard = () => {
     return { temp, humidity };
   }, [sensorData]);
 
+  const data = [];
+  if (weatherData.temp) {
+      data.push({
+          icon: <FiThermometer color="#fa8c16" />,
+          label: `Temperature: ${weatherData.temp.value.toFixed(1)}°C`
+      })
+  } else {
+    data.push({
+        icon: <FiThermometer color="#8c8c8c" />,
+        label: `No temperature data.`
+    })
+  }
+
+  if (weatherData.humidity) {
+    data.push({
+        icon: <FiDroplet color="#1890ff" />,
+        label: `Humidity: ${weatherData.humidity.value.toFixed(1)}%`
+    })
+  } else {
+    data.push({
+        icon: <FiDroplet color="#8c8c8c" />,
+        label: `No humidity data.`
+    })
+  }
+
   return (
-    <Box bg="brand.800" p={4} borderRadius="lg" mt={8}>
-      <Heading as="h3" size="lg" mb={4}>Current Weather (Nagpur)</Heading>
-      <VStack align="stretch" spacing={2}>
-        {weatherData.temp ? (
-          <HStack>
-            <Icon as={FiThermometer} color="orange.300" />
-            <Text>Temperature: {weatherData.temp.value.toFixed(1)}°C</Text>
-          </HStack>
-        ) : (
-          <Text color="gray.400">No temperature data.</Text>
-        )}
-        {weatherData.humidity ? (
-          <HStack>
-            <Icon as={FiDroplet} color="blue.300" />
-            <Text>Humidity: {weatherData.humidity.value.toFixed(1)}%</Text>
-          </HStack>
-        ) : (
-          <Text color="gray.400">No humidity data.</Text>
-        )}
-      </VStack>
-    </Box>
+    <Card title="Current Weather (Nagpur)" bordered={false}>
+        <List
+            dataSource={data}
+            renderItem={item => (
+                <List.Item>
+                    <Text>{item.icon} {item.label}</Text>
+                </List.Item>
+            )}
+        />
+    </Card>
   );
 };
 

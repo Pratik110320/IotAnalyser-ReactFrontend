@@ -1,8 +1,9 @@
-import { createContext, useState, useContext, useEffect } from "react";
+// src/contexts/WebSocketContext.jsx
+import React, { createContext, useState, useContext, useEffect } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { useToast } from "@chakra-ui/react";
-import api from '../services/api';
+import { notification } from "antd";
+import api from "../services/api";
 
 const WebSocketContext = createContext();
 
@@ -11,62 +12,75 @@ export const WebSocketProvider = ({ children }) => {
   const [alerts, setAlerts] = useState([]);
   const [simulatorStatus, setSimulatorStatus] = useState({ isRunning: false, runningDeviceIds: [] });
   const [isConnected, setIsConnected] = useState(false);
-  const toast = useToast();
 
   useEffect(() => {
     const client = new Client({
       webSocketFactory: () => new SockJS(process.env.REACT_APP_API_BASE_URL + "/ws-sensor-data"),
       onConnect: () => {
         setIsConnected(true);
+
         client.subscribe("/topic/sensor-data", (message) => {
-          const data = JSON.parse(message.body);
-          setSensorData((prev) => [...prev.slice(-200), data]);
+          try {
+            const data = JSON.parse(message.body);
+            setSensorData((prev) => [data, ...prev.slice(0, 199)]);
+          } catch (e) {
+            console.error("Invalid sensor-data message", e);
+          }
         });
+
         client.subscribe("/topic/simulator-control", (message) => {
-          const status = JSON.parse(message.body);
-          setSimulatorStatus(status);
+          try {
+            const status = JSON.parse(message.body);
+            setSimulatorStatus(status);
+          } catch (e) {
+            console.error("Invalid simulator-control message", e);
+          }
         });
+
         client.subscribe("/topic/alerts", (message) => {
           const alertMessage = message.body;
-          setAlerts((prev) => [alertMessage, ...prev.slice(0, 4)]); 
-          toast({
-            title: "New Alert!",
+          setAlerts((prev) => [alertMessage, ...prev.slice(0, 4)]);
+          notification.warning({
+            message: "New Alert!",
             description: alertMessage,
-            status: "warning",
-            duration: 9000,
-            isClosable: true,
+            duration: 9,
           });
         });
       },
       onDisconnect: () => setIsConnected(false),
-      onStompError: () => setIsConnected(false),
+      onStompError: (err) => {
+        console.error("STOMP error", err);
+        setIsConnected(false);
+      },
       reconnectDelay: 5000,
     });
 
     client.activate();
     return () => client.deactivate();
-  }, [toast]);
-  
+  }, []);
+
   const startSimulator = async () => {
-      try {
-        await api.post('/simulator/startAll');
-        toast({ title: "Simulator Started", status: "success", isClosable: true });
-      } catch (e) {
-        toast({ title: "Failed to Start Simulator", status: "error", isClosable: true });
-      }
-  }
+    try {
+      await api.post("/simulator/startAll");
+      notification.success({ message: "Simulator Started" });
+    } catch (e) {
+      console.error(e);
+      notification.error({ message: "Failed to Start Simulator" });
+    }
+  };
 
   const stopSimulator = async () => {
-      try {
-        await api.post('/simulator/stopAll');
-        toast({ title: "Simulator Stopped", status: "info", isClosable: true });
-      } catch (e) {
-        toast({ title: "Failed to Stop Simulator", status: "error", isClosable: true });
-      }
-  }
+    try {
+      await api.delete("/simulator/stopAll");
+      notification.info({ message: "Simulator Stopped" });
+    } catch (e) {
+      console.error(e);
+      notification.error({ message: "Failed to Stop Simulator" });
+    }
+  };
 
   return (
-    <WebSocketContext.Provider value={{ sensorData, alerts, simulatorStatus, isConnected, startSimulator, stopSimulator }}>
+    <WebSocketContext.Provider value={{ sensorData, setSensorData, alerts, simulatorStatus, isConnected, startSimulator, stopSimulator }}>
       {children}
     </WebSocketContext.Provider>
   );

@@ -1,37 +1,37 @@
-import { Button, FormControl, FormLabel, Input, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
 
 const AuthForm = ({ isLogin, onSubmit }) => {
-  const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const success = await onSubmit(formData);
+  const onFinish = async (values) => {
+    const success = await onSubmit(values);
     if (success && isLogin) {
       navigate("/dashboard");
     }
   };
 
   return (
-    <VStack as="form" spacing={4} onSubmit={handleSubmit}>
-      <FormControl>
-        <FormLabel>Email</FormLabel>
-        <Input type="email" name="username" value={formData.username} onChange={handleChange} />
-      </FormControl>
-      <FormControl>
-        <FormLabel>Password</FormLabel>
-        <Input type="password" name="password" value={formData.password} onChange={handleChange} />
-      </FormControl>
-      <Button type="submit" colorScheme="blue" w="full">{isLogin ? "Login" : "Register"}</Button>
-    </VStack>
+    <Form onFinish={onFinish}>
+      <Form.Item
+        name="username"
+        rules={[{ required: true, message: 'Please input your Email!', type: 'email' }]}
+      >
+        <Input prefix={<MailOutlined />} placeholder="Email" />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        rules={[{ required: true, message: 'Please input your Password!' }]}
+      >
+        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+          {isLogin ? "Login" : "Register"}
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

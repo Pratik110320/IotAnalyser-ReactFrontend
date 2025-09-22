@@ -1,68 +1,73 @@
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { Modal, Form, Input, Select } from "antd";
+import { useEffect } from "react";
+
+const { Option } = Select;
 
 const DeviceForm = ({ isOpen, onClose, onSubmit, device }) => {
-  const [formData, setFormData] = useState({
-    deviceName: "",
-    deviceType: "",
-    status: "ONLINE",
-  });
+  const [form] = Form.useForm();
 
   useEffect(() => {
     if (device) {
-      setFormData(device);
+      form.setFieldsValue(device);
     } else {
-      setFormData({ deviceName: "", deviceType: "", status: "ONLINE" });
+      form.resetFields();
+      form.setFieldsValue({ status: "ONLINE" });
     }
-  }, [device]);
+  }, [device, form, isOpen]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const dataToSubmit = { ...values };
+        if (device) {
+            dataToSubmit.deviceId = device.deviceId;
+        }
+        onSubmit(dataToSubmit);
+        onClose();
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
   };
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  const dataToSubmit = { ...formData };
-  if (!device) {
-    delete dataToSubmit.status;
-  }
-  onSubmit(dataToSubmit);
-  onClose();
-};
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent as="form" onSubmit={handleSubmit} bg="brand.800" color="white">
-        <ModalHeader>{device ? "Edit Device" : "Add Device"}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl mb={4}>
-            <FormLabel>Device Name</FormLabel>
-            <Input name="deviceName" value={formData.deviceName} onChange={handleChange} />
-          </FormControl>
-          <FormControl mb={4}>
-            <FormLabel>Device Type</FormLabel>
-            <Input name="deviceType" value={formData.deviceType} onChange={handleChange} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Status</FormLabel>
-            <Select name="status" value={formData.status} onChange={handleChange}>
-              <option value="ONLINE">Online</option>
-              <option value="OFFLINE">Offline</option>
-              <option value="DISCONNECTED">Disconnected</option>
-              <option value="UNKNOWN">Unknown</option>
-            </Select>
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} type="submit">
-            Save
-          </Button>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
-        </ModalFooter>
-      </ModalContent>
+    <Modal
+      title={device ? "Edit Device" : "Add Device"}
+      open={isOpen}
+      onOk={handleOk}
+      onCancel={onClose}
+      okText="Save"
+    >
+      <Form form={form} layout="vertical" name="device_form">
+        <Form.Item
+          name="deviceName"
+          label="Device Name"
+          rules={[{ required: true, message: 'Please input the device name!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="deviceType"
+          label="Device Type"
+          rules={[{ required: true, message: 'Please input the device type!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="status"
+          label="Status"
+          initialValue="ONLINE"
+          rules={[{ required: true }]}
+        >
+          <Select>
+            <Option value="ONLINE">Online</Option>
+            <Option value="OFFLINE">Offline</Option>
+            <Option value="DISCONNECTED">Disconnected</Option>
+            <Option value="UNKNOWN">Unknown</Option>
+          </Select>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

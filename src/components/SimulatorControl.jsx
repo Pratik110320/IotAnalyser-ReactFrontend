@@ -1,17 +1,24 @@
-import { Box, Heading, Button, HStack, Text } from "@chakra-ui/react";
+import { Card, Button, Space, Typography, Tag } from "antd";
 import { useWebSocket } from "../contexts/WebSocketContext";
+import { PlayCircleOutlined, StopOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 
 const SimulatorControl = () => {
     const { simulatorStatus, startSimulator, stopSimulator } = useWebSocket();
   return (
-    <Box bg="brand.800" p={4} borderRadius="lg">
-      <Heading as="h3" size="lg" mb={4}>Simulator Control</Heading>
-      <HStack>
-        <Button onClick={startSimulator} colorScheme="green" isDisabled={simulatorStatus.isRunning}>Start</Button>
-        <Button onClick={stopSimulator} colorScheme="red" isDisabled={!simulatorStatus.isRunning}>Stop</Button>
-      </HStack>
-        <Text mt={4}>Status: {simulatorStatus.isRunning ? 'Running' : 'Stopped'}</Text>
-    </Box>
+    <Card title="Simulator Control" bordered={false}>
+      <Space>
+        <Button icon={<PlayCircleOutlined/>} type="primary" onClick={startSimulator} disabled={simulatorStatus.isRunning}>Start</Button>
+        <Button icon={<StopOutlined/>} danger onClick={stopSimulator} disabled={!simulatorStatus.isRunning}>Stop</Button>
+      </Space>
+      <div style={{ marginTop: 16 }}>
+        <Text>Status: </Text>
+        <Tag color={simulatorStatus.isRunning ? 'green' : 'red'}>
+            {simulatorStatus.isRunning ? 'Running' : 'Stopped'}
+        </Tag>
+      </div>
+    </Card>
   );
 };
 

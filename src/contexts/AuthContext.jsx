@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { useToast } from "@chakra-ui/react";
+import { message } from "antd";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,10 +24,10 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.common["Authorization"] = `Bearer ${data}`;
       setToken(data);
       setUser({ email: credentials.username });
-      toast({ title: "Login Successful", status: "success", duration: 3000, isClosable: true });
+      message.success("Login Successful");
       return true;
     } catch (error) {
-      toast({ title: "Login Failed", description: "Invalid credentials.", status: "error", duration: 3000, isClosable: true });
+      message.error("Login Failed: Invalid credentials.");
       return false;
     }
   };
@@ -36,14 +35,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (credentials) => {
     try {
         await api.post("/api/auth/register", credentials);
-        toast({ title: "Registration Successful", description: "You can now log in.", status: "success", duration: 3000, isClosable: true });
+        message.success("Registration Successful. You can now log in.");
         const loginSuccess = await login(credentials);
         if (loginSuccess) {
             navigate('/dashboard');
         }
         return true;
     } catch (error) {
-        toast({ title: "Registration Failed", description: "Email might already be in use.", status: "error", duration: 3000, isClosable: true });
+        message.error("Registration Failed: Email might already be in use.");
         return false;
     }
   };
@@ -53,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     delete api.defaults.headers.common["Authorization"];
     setToken(null);
     setUser(null);
-    toast({ title: "Logged Out", status: "info", duration: 3000, isClosable: true });
+    message.info("Logged Out");
   };
 
   return (

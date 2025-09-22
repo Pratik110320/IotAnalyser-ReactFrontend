@@ -1,29 +1,32 @@
-import { Box, Heading, VStack, HStack, Text, Circle } from "@chakra-ui/react";
+import { Card, List, Badge } from "antd";
 
-const DeviceStatus = ({ devices }) => {
-  const getStatusColor = (status) => {
+const getStatusType = (status) => {
     switch (status) {
       case "ONLINE":
-        return "green.500";
+        return "success";
       case "OFFLINE":
-        return "yellow.500";
+        return "warning";
       default:
-        return "red.500";
+        return "error";
     }
-  };
+}
 
+const DeviceStatus = ({ devices }) => {
   return (
-    <Box bg="brand.800" p={4} borderRadius="lg" mb={8}>
-      <Heading as="h3" size="lg" mb={4}>Device Status</Heading>
-      <VStack align="stretch" spacing={4}>
-        {devices.map((device) => (
-          <HStack key={device.deviceId} justify="space-between">
-            <Text>{device.deviceName}</Text>
-            <Circle size="10px" bg={getStatusColor(device.status)} />
-          </HStack>
-        ))}
-      </VStack>
-    </Box>
+    <Card title="Device Status" bordered={false}>
+      <List
+        dataSource={devices}
+        renderItem={(device) => (
+          <List.Item>
+            <List.Item.Meta
+              title={device.deviceName}
+              description={device.deviceType}
+            />
+            <Badge status={getStatusType(device.status)} text={device.status} />
+          </List.Item>
+        )}
+      />
+    </Card>
   );
 };
 

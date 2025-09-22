@@ -1,30 +1,48 @@
-import { Box, Heading, Tabs, TabList, Tab, TabPanels, TabPanel, Text, Link } from "@chakra-ui/react";
+import { Card, Typography, Tabs, Alert } from "antd";
 import AuthForm from "../components/AuthForm";
 import { useAuth } from "../contexts/AuthContext";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { LoginOutlined, UserAddOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
 
 const AuthPage = () => {
     const { login, register } = useAuth();
     const location = useLocation();
-    const [isLogin, setIsLogin] = useState(false);
+
+    const items = [
+        {
+            label: (
+                <span>
+                    <LoginOutlined />
+                    Login
+                </span>
+            ),
+            key: 'login',
+            children: <AuthForm isLogin onSubmit={login} />,
+        },
+        {
+            label: (
+                <span>
+                    <UserAddOutlined />
+                    Register
+                </span>
+            ),
+            key: 'register',
+            children: <AuthForm onSubmit={register} />,
+        },
+    ];
 
   return (
-    <Box p={8} bg="brand.900" minH="100vh" color="white" display="flex" alignItems="center" justifyContent="center">
-        <Box w="md" bg="brand.800" p={8} borderRadius="lg">
-            {location.state?.fromLanding && <Text textAlign="center" mb={4}>Please log in to view the features of the app.</Text>}
-      <Heading as="h2" size="xl" mb={8} textAlign="center">
-        {isLogin ? 'Login' : 'Register'}
-      </Heading>
-      {isLogin ? <AuthForm isLogin onSubmit={login} /> : <AuthForm onSubmit={register} />}
-      <Text textAlign="center" mt={4}>
-        {isLogin ? "Don't have an account? " : "Already signed in? "}
-        <Link color="blue.400" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? "Register now" : "Log in now"}
-        </Link>
-      </Text>
-      </Box>
-    </Box>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh'}}>
+        <Card style={{ width: 400 }}>
+            <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>
+                IoT Analyser
+            </Title>
+            {location.state?.fromLanding && <Alert message="Please log in to view the features of the app." type="info" showIcon style={{marginBottom: 24}} />}
+            <Tabs defaultActiveKey="login" items={items} centered/>
+        </Card>
+    </div>
   );
 };
 

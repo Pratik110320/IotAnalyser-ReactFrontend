@@ -1,0 +1,18 @@
+/* src/components/SensorDataTable.css */
+.sensor-table-card {
+  background: #0f1724; /* adjust to your dark brand */
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  color: white;
+}
+
+/* fade animation similar to your keyframes */
+@keyframes fadeInRow {
+  from { background-color: rgba(74, 85, 104, 0.5); }
+  to   { background-color: transparent; }
+}
+
+.animated-row {
+  animation: fadeInRow 1.5s ease-out;
+}

@@ -1,0 +1,40 @@
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  background: linear-gradient(-45deg, #2d3748, #4a5568, #1a202c, #7B61FF);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+}
+
+.feature-card {
+  text-align: center;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}

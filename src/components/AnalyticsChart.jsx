@@ -1,5 +1,4 @@
-// src/components/AnalyticsChart.jsx
-import { Box } from "@chakra-ui/react";
+import { Card } from "antd";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -24,9 +23,9 @@ const AnalyticsChart = ({ data }) => {
         ]
     }
   return (
-    <Box bg="brand.800" p={4} borderRadius="lg">
+    <Card bordered={false}>
       <Line data={chartData} />
-    </Box>
+    </Card>
   );
 };
 
