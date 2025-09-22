@@ -1,4 +1,3 @@
-// src/contexts/WebSocketContext.jsx
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -61,7 +60,7 @@ export const WebSocketProvider = ({ children }) => {
 
   const startSimulator = async () => {
     try {
-      await api.post("/api/simulator/startAll");
+      await api.post("/simulator/startAll");
       notification.success({ message: "Simulator Started" });
     } catch (e) {
       console.error(e);
@@ -71,7 +70,7 @@ export const WebSocketProvider = ({ children }) => {
 
   const stopSimulator = async () => {
     try {
-      await api.delete("/api/simulator/stopAll");
+      await api.post("/simulator/stopAll");
       notification.info({ message: "Simulator Stopped" });
     } catch (e) {
       console.error(e);
@@ -87,4 +86,3 @@ export const WebSocketProvider = ({ children }) => {
 };
 
 export const useWebSocket = () => useContext(WebSocketContext);
-

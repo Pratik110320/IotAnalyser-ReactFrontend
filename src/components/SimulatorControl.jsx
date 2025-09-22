@@ -6,6 +6,7 @@ const { Text } = Typography;
 
 const SimulatorControl = () => {
     const { simulatorStatus, startSimulator, stopSimulator } = useWebSocket();
+
   return (
     <Card title="Simulator Control" bordered={false}>
       <Space>
