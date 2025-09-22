@@ -3,15 +3,35 @@ import { message } from "antd";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
-// Helper function to decode JWT payload
+// A more robust function to decode JWT payload that handles URL-safe Base64
 const decodeToken = (token) => {
   try {
-    return JSON.parse(atob(token.split('.')[1]));
+    // A JWT is composed of three parts separated by dots. We need the second part (the payload).
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+
+    // The payload is Base64URL encoded. We need to replace URL-safe characters
+    // and add padding to make it a valid Base64 string for atob.
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+
+    return JSON.parse(jsonPayload);
   } catch (e) {
     console.error("Failed to decode token", e);
+    // If decoding fails, clear the invalid token to prevent future errors
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     return null;
   }
 };
+
 
 const AuthContext = createContext();
 
@@ -28,7 +48,6 @@ export const AuthProvider = ({ children }) => {
         if (storedUser && storedUser !== 'undefined') {
           setUser(JSON.parse(storedUser));
         } else {
-            // If user is not in local storage but token is, decode it
             const decodedPayload = decodeToken(token);
             if (decodedPayload && decodedPayload.sub) {
                 const userData = { email: decodedPayload.sub };
@@ -48,7 +67,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      // The response.data will be the raw JWT string
       const { data: tokenString } = await api.post("/api/auth/authenticate", credentials);
       
       if (typeof tokenString === 'string' && tokenString.length > 0) {
@@ -58,7 +76,7 @@ export const AuthProvider = ({ children }) => {
             throw new Error("Invalid token received from server.");
         }
 
-        const userData = { email: decodedPayload.sub }; // 'sub' is the standard claim for subject (username/email)
+        const userData = { email: decodedPayload.sub }; 
         
         localStorage.setItem("token", tokenString);
         localStorage.setItem("user", JSON.stringify(userData));
@@ -79,13 +97,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (credentials) => {
     try {
-        // The backend returns a success message string on successful registration
         await api.post("/api/auth/register", credentials);
         message.success("Registration Successful! Please log in.");
-        // We return true to signal the UI to switch to the login tab
         return true; 
     } catch (error) {
-        const errorMessage = error.response?.data || "Email might already be in use.";
+        // Display the specific error message from the backend if available
+        const errorMessage = error.response?.data?.message || error.response?.data || "Email might already be in use.";
         message.error(`Registration Failed: ${errorMessage}`);
         return false;
     }
