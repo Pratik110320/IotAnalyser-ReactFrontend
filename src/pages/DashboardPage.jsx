@@ -21,6 +21,7 @@ const DashboardPage = () => {
         Dashboard
       </Title>
       <Row gutter={[24, 24]}>
+        {/* Stat Cards */}
         <Col xs={24} sm={12} md={8}>
             <StatCard icon={<HddOutlined />} label="Active Devices" value={devices.length} />
         </Col>
@@ -30,21 +31,25 @@ const DashboardPage = () => {
          <Col xs={24} sm={12} md={8}>
             <StatCard icon={<LineChartOutlined />} label="Total Readings" value={sensorData.length} />
         </Col>
+
+        {/* Main Content Area */}
         <Col xs={24} lg={16}>
           <RealTimeChart sensorData={sensorData} />
         </Col>
+
+        {/* Sidebar Widgets */}
         <Col xs={24} lg={8}>
           <Row gutter={[24, 24]}>
-            <Col span={24}>
+            <Col xs={24} sm={12} lg={24}>
               <DeviceStatus devices={devices} />
             </Col>
-            <Col span={24}>
+            <Col xs={24} sm={12} lg={24}>
               <SimulatorControl />
             </Col>
-            <Col span={24}>
+            <Col xs={24} sm={12} lg={24}>
               <Alerts />
             </Col>
-            <Col span={24}>
+            <Col xs={24} sm={12} lg={24}>
               <WeatherCard />
             </Col>
           </Row>
