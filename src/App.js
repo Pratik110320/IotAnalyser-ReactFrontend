@@ -17,7 +17,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Sidebar from './components/SideBar';
 
-const { Content, Sider } = Layout;
+const { Content, Sider, Header } = Layout; // 👈 Import Header
 
 const AppLayout = () => {
     const { token } = useAuth();
@@ -29,7 +29,10 @@ const AppLayout = () => {
     if (token && !isPublicPath) {
         return (
             <Layout style={{ minHeight: '100vh' }}>
-                <NavBar /> {/* Corrected component usage */}
+                {/* 👇 Wrap NavBar in a Header component with a specific class */}
+                <Header className="app-header">
+                    <NavBar />
+                </Header>
                 <Layout>
                     <Sider
                         width={200}
@@ -60,7 +63,7 @@ const AppLayout = () => {
     // Layout for public pages
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <NavBar /> {/* Corrected component usage */}
+            <NavBar />
             <Content>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
@@ -74,6 +77,7 @@ const AppLayout = () => {
     );
 };
 
+// ... Rest of the file remains the same
 function App() {
     return (
         <ConfigProvider

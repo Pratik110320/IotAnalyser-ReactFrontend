@@ -1,10 +1,13 @@
-export default function NavBar() {
-return (
-<header className="site-nav">
-<div className="nav-inner">
-<div className="logo">IoT<span className="logo-highlight">Analyser</span></div>
+// src/pages/NavBar.jsx
 
-</div>
-</header>
-);
+import React from 'react';
+
+export default function NavBar() {
+  return (
+    <div className="site-nav">
+      <div className="nav-inner">
+        <div className="logo">IoT<span className="logo-highlight">Analyser</span></div>
+      </div>
+    </div>
+  );
 }
