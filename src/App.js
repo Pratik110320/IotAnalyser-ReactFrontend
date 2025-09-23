@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { ConfigProvider, Layout, theme } from 'antd';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
-import Navbar from './pages/NavBar';
+import NavBar from './pages/NavBar'; 
 import Footer from './pages/Footer';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -29,7 +29,7 @@ const AppLayout = () => {
     if (token && !isPublicPath) {
         return (
             <Layout style={{ minHeight: '100vh' }}>
-                <Navbar />
+                <NavBar /> {/* Corrected component usage */}
                 <Layout>
                     <Sider
                         width={200}
@@ -57,9 +57,10 @@ const AppLayout = () => {
         );
     }
 
+    // Layout for public pages
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Navbar />
+            <NavBar /> {/* Corrected component usage */}
             <Content>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />

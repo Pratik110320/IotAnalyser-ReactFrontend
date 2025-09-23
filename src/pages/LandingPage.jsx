@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
-import NavBar from './NavBar';
-import Footer from './Footer';
 import './LandingPage.css';
-
+import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
 useEffect(() => {
@@ -76,8 +74,6 @@ observer.disconnect();
 const particles = [10,20,30,40,50,60,70,80,90];
 return (
 <div className="landing-container">
-<NavBar />
-
 
 {/* Animated Particles */}
 <div className="particles">
@@ -106,8 +102,9 @@ Transform your IoT ecosystem with
 
 
 <div className="cta-container">
+<Link to="/register">
 <button className="primary-btn">Launch Dashboard →</button>
-
+</Link>
 </div>
 </div>
 
@@ -158,9 +155,6 @@ Turn raw data into strategic insights with interactive visualizations and detail
 </div>
 </div>
 </section>
-
-
-<Footer />
 </div>
 );
 }
