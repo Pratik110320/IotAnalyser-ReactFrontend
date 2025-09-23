@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { ConfigProvider, Layout, theme } from 'antd';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './pages/NavBar';
+import Footer from './pages/Footer';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import DevicesPage from './pages/DevicesPage';
