@@ -13,8 +13,7 @@ import DevicesPage from './pages/DevicesPage';
 import SensorDataPage from './pages/SensorDataPage';
 import AnomaliesPage from './pages/AnomaliesPage';
 import AnalyticsPage from './pages/AnalyticsPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import { LoginPage } from './pages/LoginPage';import RegisterPage from './pages/RegisterPage';
 import Sidebar from './components/SideBar';
 
 const { Content, Sider, Header } = Layout;

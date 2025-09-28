@@ -660,7 +660,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section
       <section className="stats-section" data-animate>
         <div className="stats-container">
           <motion.div 
@@ -707,7 +707,7 @@ const LandingPage = () => {
             <div className="stat-label">Response Time</div>
           </motion.div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

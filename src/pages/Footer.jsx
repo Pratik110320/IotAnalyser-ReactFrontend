@@ -8,7 +8,7 @@ import {
   MailOutlined,
   HeartFilled,
   RocketOutlined,
-  ShieldCheckOutlined,
+  SafetyCertificateOutlined,
   ApiOutlined
 } from '@ant-design/icons';
 
@@ -209,7 +209,7 @@ const Footer = () => {
       `}</style>
 
       <div className="footer-content">
-        {/* Stats Section */}
+        {/* Stats Section
         <div className="footer-stats">
           <div className="stat-item">
             <div className="stat-number">99.9%</div>
@@ -227,7 +227,7 @@ const Footer = () => {
             <div className="stat-number">24/7</div>
             <div className="stat-label">Monitoring</div>
           </div>
-        </div>
+        </div> */}
 
         {/* Newsletter Section */}
         <div className="newsletter">
@@ -270,9 +270,9 @@ const Footer = () => {
           </Col>
 
           <Col xs={24} sm={12} lg={6} className="footer-section">
-            <Text className="footer-title">
-              <ShieldCheckOutlined />
-              Company
+          <Text className="footer-title">
+    <SafetyCertificateOutlined />{/* Changed from ShieldCheckOutlined */}
+    Company
             </Text>
             <a href="#about" className="footer-link">About Us</a>
             <a href="#careers" className="footer-link">Careers</a>
