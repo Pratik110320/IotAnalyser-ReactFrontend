@@ -453,70 +453,70 @@ const RegisterPage = () => {
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[
-                                { required: true, message: 'Please enter your password!' },
-                                { min: 6, message: 'Password must be at least 6 characters!' }
-                            ]}
-                        >
-                            <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="Create a strong password"
-                                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                                autoComplete="new-password"
-                            />
-                            
-                            {/* Password Strength Indicator */}
-                            <Form.Item noStyle shouldUpdate={(prev, curr) => prev.password !== curr.password}>
-                                {({ getFieldValue }) => {
-                                    const password = getFieldValue('password') || '';
-                                    const hasLength = password.length >= 6;
-                                    const hasNumber = /\d/.test(password);
-                                    const hasLower = /[a-z]/.test(password);
-                                    const hasUpper = /[A-Z]/.test(password);
-                                    const hasSpecial = /[!@#$%^&*]/.test(password);
-                                    
-                                    const strength = [hasLength, hasNumber, hasLower, hasUpper, hasSpecial].filter(Boolean).length;
-                                    
-                                    if (!password) return null;
-                                    
-                                    return (
-                                        <div className="password-strength">
-                                            <div className="strength-indicator">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <div 
-                                                        key={i} 
-                                                        className={`strength-dot ${i < strength ? 'active' : ''}`} 
-                                                    />
-                                                ))}
-                                            </div>
-                                            <div className="strength-requirements">
-                                                <div className={`requirement ${hasLength ? 'met' : ''}`}>
-                                                    <div className="requirement-icon">
-                                                        {hasLength && <CheckCircleOutlined />}
-                                                    </div>
-                                                    At least 6 characters
-                                                </div>
-                                                <div className={`requirement ${hasNumber ? 'met' : ''}`}>
-                                                    <div className="requirement-icon">
-                                                        {hasNumber && <CheckCircleOutlined />}
-                                                    </div>
-                                                    Contains a number
-                                                </div>
-                                                <div className={`requirement ${hasLower && hasUpper ? 'met' : ''}`}>
-                                                    <div className="requirement-icon">
-                                                        {hasLower && hasUpper && <CheckCircleOutlined />}
-                                                    </div>
-                                                    Mixed case letters
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }}
-                            </Form.Item>
-                        </Form.Item>
+                       <Form.Item
+    label="Password"
+    name="password"
+    rules={[
+        { required: true, message: 'Please enter your password!' },
+        { min: 6, message: 'Password must be at least 6 characters!' }
+    ]}
+>
+    <Input.Password
+        prefix={<LockOutlined />}
+        placeholder="Create a strong password"
+        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+        autoComplete="new-password"
+    />
+</Form.Item>
+
+{/* Password Strength Indicator - moved outside */}
+<Form.Item noStyle shouldUpdate={(prev, curr) => prev.password !== curr.password}>
+    {({ getFieldValue }) => {
+        const password = getFieldValue('password') || '';
+        const hasLength = password.length >= 6;
+        const hasNumber = /\d/.test(password);
+        const hasLower = /[a-z]/.test(password);
+        const hasUpper = /[A-Z]/.test(password);
+        const hasSpecial = /[!@#$%^&*]/.test(password);
+        
+        const strength = [hasLength, hasNumber, hasLower, hasUpper, hasSpecial].filter(Boolean).length;
+        
+        if (!password) return null;
+        
+        return (
+            <div className="password-strength">
+                <div className="strength-indicator">
+                    {[...Array(5)].map((_, i) => (
+                        <div 
+                            key={i} 
+                            className={`strength-dot ${i < strength ? 'active' : ''}`} 
+                        />
+                    ))}
+                </div>
+                <div className="strength-requirements">
+                    <div className={`requirement ${hasLength ? 'met' : ''}`}>
+                        <div className="requirement-icon">
+                            {hasLength && <CheckCircleOutlined />}
+                        </div>
+                        At least 6 characters
+                    </div>
+                    <div className={`requirement ${hasNumber ? 'met' : ''}`}>
+                        <div className="requirement-icon">
+                            {hasNumber && <CheckCircleOutlined />}
+                        </div>
+                        Contains a number
+                    </div>
+                    <div className={`requirement ${hasLower && hasUpper ? 'met' : ''}`}>
+                        <div className="requirement-icon">
+                            {hasLower && hasUpper && <CheckCircleOutlined />}
+                        </div>
+                        Mixed case letters
+                    </div>
+                </div>
+            </div>
+        );
+    }}
+</Form.Item>
 
                         {/* <Form.Item
                             label="Confirm Password"
