@@ -518,7 +518,7 @@ const RegisterPage = () => {
                             </Form.Item>
                         </Form.Item>
 
-                        <Form.Item
+                        {/* <Form.Item
                             label="Confirm Password"
                             name="confirmPassword"
                             dependencies={['password']}
@@ -540,7 +540,7 @@ const RegisterPage = () => {
                                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                 autoComplete="new-password"
                             />
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item
                             name="agreement"
@@ -581,7 +581,7 @@ const RegisterPage = () => {
                         </Form.Item>
                     </Form>
 
-                    <Divider>
+                    {/* <Divider>
                         <span className="divider-text">or sign up with</span>
                     </Divider>
 
@@ -592,7 +592,7 @@ const RegisterPage = () => {
                         <Button className="social-btn" icon={<GithubOutlined />}>
                             Continue with GitHub
                         </Button>
-                    </div>
+                    </div> */}
 
                     <div className="auth-footer">
                         <Text style={{ color: '#94a3b8' }}>

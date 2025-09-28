@@ -360,7 +360,7 @@ export const LoginPage = () => {
                         </Form.Item>
                     </Form>
 
-                    <Divider>
+                    {/* <Divider>
                         <span className="divider-text">or continue with</span>
                     </Divider>
 
@@ -371,7 +371,7 @@ export const LoginPage = () => {
                         <Button className="social-btn" icon={<GithubOutlined />}>
                             Continue with GitHub
                         </Button>
-                    </div>
+                    </div> */}
 
                     <div className="auth-footer">
                         <Text style={{ color: '#94a3b8' }}>
