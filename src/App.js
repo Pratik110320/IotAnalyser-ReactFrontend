@@ -1,11 +1,12 @@
-// Enhanced App.js with Responsive Layout
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ConfigProvider, Layout, theme, Drawer, FloatButton, Button } from 'antd';
 import { MenuOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
-import NavBar from './pages/NavBar'; 
+import NavBar from './pages/NavBar';
 import Footer from './pages/Footer';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
@@ -16,6 +17,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import { LoginPage } from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Sidebar from './components/SideBar';
+import './App.css'; // Make sure to import the CSS file
 
 const { Content, Sider, Header } = Layout;
 
@@ -54,10 +56,10 @@ const AppLayout = () => {
 
     if (token && !isPublicPath) {
         return (
-            <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+            <Layout style={{ minHeight: '100vh' }}>
                 {isMobile ? (
                     // Mobile Layout
-                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                    <Layout>
                         <Header className="mobile-header">
                             <Button
                                 className="mobile-menu-btn"
@@ -78,7 +80,7 @@ const AppLayout = () => {
                         >
                             <Sidebar onItemClick={() => setSidebarVisible(false)} />
                         </Drawer>
-                        <Content className="main-content" style={{ flex: 1 }}>
+                        <Content className="main-content">
                             <div className="content-wrapper">
                                 <Routes>
                                     <Route path="/dashboard" element={<DashboardPage />} />
@@ -91,7 +93,7 @@ const AppLayout = () => {
                             </div>
                         </Content>
                         <Footer />
-                    </div>
+                    </Layout>
                 ) : (
                     // Desktop Layout
                     <>
@@ -134,9 +136,9 @@ const AppLayout = () => {
 
     // Public Pages Layout
     return (
-        <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+        <Layout style={{ minHeight: '100vh' }}>
             <NavBar />
-            <Content style={{ position: 'relative', zIndex: 1 }}>
+            <Content>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
@@ -165,45 +167,10 @@ function App() {
                 token: {
                     colorPrimary: '#6366f1',
                     colorBgBase: '#0f172a',
-                    colorBgContainer: '#1e293b',
-                    colorBgElevated: '#334155',
-                    colorBorder: 'rgba(255, 255, 255, 0.1)',
-                    colorText: '#f8fafc',
-                    colorTextSecondary: '#cbd5e1',
-                    colorTextTertiary: '#94a3b8',
-                    borderRadius: 12,
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    // ... other theme tokens from your original file
                 },
                 components: {
-                    Card: {
-                        colorBgContainer: 'rgba(30, 41, 59, 0.8)',
-                    },
-                    Table: {
-                        colorBgContainer: 'rgba(30, 41, 59, 0.8)',
-                        headerBg: 'rgba(51, 65, 85, 0.8)',
-                    },
-                    Menu: {
-                        colorBgContainer: 'transparent',
-                        colorItemBgSelected: 'rgba(99, 102, 241, 0.1)',
-                        colorItemBgHover: 'rgba(99, 102, 241, 0.05)',
-                        colorItemTextSelected: '#6366f1',
-                        colorItemTextHover: '#6366f1',
-                    },
-                    Button: {
-                        colorPrimary: '#6366f1',
-                        colorPrimaryHover: '#4f46e5',
-                        colorPrimaryActive: '#4338ca',
-                    },
-                    Input: {
-                        colorBgContainer: 'rgba(30, 41, 59, 0.8)',
-                        colorBorder: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    Modal: {
-                        colorBgElevated: 'rgba(30, 41, 59, 0.95)',
-                    },
-                    Drawer: {
-                        colorBgElevated: 'rgba(30, 41, 59, 0.98)',
-                    }
+                    // ... your component theme overrides
                 }
             }}
         >
