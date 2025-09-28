@@ -49,3 +49,15 @@
 .app-header .nav-inner {
   padding: 0;
 }
+
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed;
+    height: 100%;
+    z-index: 1000;
+  }
+
+  .ant-layout-content {
+    margin-left: 0 !important;
+  }
+}

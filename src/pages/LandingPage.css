@@ -419,3 +419,32 @@ button { position: relative; overflow: hidden; }
   .primary-btn, .secondary-btn { width: 100%; max-width: 300px; }
   .stat-number { font-size: 2.5rem; }
 }
+
+
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 3rem;
+  }
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  .section-title {
+    font-size: 2.2rem;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  .cta-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  .stat-number {
+    font-size: 2.5rem;
+  }
+}
