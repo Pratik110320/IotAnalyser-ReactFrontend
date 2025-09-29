@@ -6,9 +6,12 @@ import { useNavigate } from "react-router-dom";
 // A more robust function to decode JWT payload that handles URL-safe Base64
 const decodeToken = (token) => {
   try {
+    // A JWT is composed of three parts separated by dots. We need the second part (the payload).
     const base64Url = token.split('.')[1];
     if (!base64Url) return null;
 
+    // The payload is Base64URL encoded. We need to replace URL-safe characters
+    // and add padding to make it a valid Base64 string for atob.
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
       atob(base64)
@@ -22,6 +25,9 @@ const decodeToken = (token) => {
     return JSON.parse(jsonPayload);
   } catch (e) {
     console.error("Failed to decode token", e);
+    // If decoding fails, clear the invalid token to prevent future errors
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     return null;
   }
 };
@@ -47,30 +53,27 @@ export const AuthProvider = ({ children }) => {
                 const userData = { email: decodedPayload.sub };
                 setUser(userData);
                 localStorage.setItem('user', JSON.stringify(userData));
-            } else {
-              // Token exists but is invalid
-              logout();
             }
         }
       } catch (error) {
-        console.error("Failed to initialize auth state:", error);
-        logout();
+        console.error("Failed to parse user from localStorage", error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
       }
-    } else {
-      delete api.defaults.headers.common["Authorization"];
     }
   }, [token]);
 
   const login = async (credentials) => {
     try {
-      // Backend expects "username", frontend form uses "email"
-      const authRequest = {
+      const { data } = await api.post("/api/auth/authenticate", {
         username: credentials.email,
         password: credentials.password
-      };
-      
-      // Backend returns the token as a raw string in the response data
-      const { data: tokenString } = await api.post("/api/auth/authenticate", authRequest);
+      });
+
+      // The backend returns a raw token string, not JSON
+      const tokenString = data;
       
       if (typeof tokenString === 'string' && tokenString.length > 0) {
         const decodedPayload = decodeToken(tokenString);
@@ -83,6 +86,7 @@ export const AuthProvider = ({ children }) => {
         
         localStorage.setItem("token", tokenString);
         localStorage.setItem("user", JSON.stringify(userData));
+        api.defaults.headers.common["Authorization"] = `Bearer ${tokenString}`;
         setToken(tokenString);
         setUser(userData);
         message.success("Login Successful");
@@ -93,7 +97,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      const errorMessage = error.response?.data?.message || "Invalid credentials or server error.";
+      const errorMessage = error.response?.data?.message || error.response?.data || "Invalid credentials or server error.";
       message.error(`Login Failed: ${errorMessage}`);
       return false;
     }
@@ -106,9 +110,9 @@ export const AuthProvider = ({ children }) => {
             password: credentials.password
         };
         await api.post("/api/auth/register", registerRequest);
-        message.success("Registration Successful! Please log in.");
-        navigate("/login", { state: { message: "Registration successful! You can now log in." } });
-        return true;
+        message.success("Registration Successful! Logging you in...");
+        // Automatically log in after successful registration
+        return await login(credentials);
     } catch (error) {
         const errorMessage = error.response?.data?.message || error.response?.data || "Email might already be in use.";
         message.error(`Registration Failed: ${errorMessage}`);
@@ -119,10 +123,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    delete api.defaults.headers.common["Authorization"];
     setToken(null);
     setUser(null);
     message.info("Logged Out");
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -133,5 +138,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
 
