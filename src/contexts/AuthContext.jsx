@@ -67,7 +67,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const { data: tokenString } = await api.post("/api/auth/authenticate", credentials);
+      const { data } = await api.post("/api/auth/authenticate", credentials);
+      const tokenString = data.token;
       
       if (typeof tokenString === 'string' && tokenString.length > 0) {
         const decodedPayload = decodeToken(tokenString);

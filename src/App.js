@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ConfigProvider, Layout, theme, Drawer, FloatButton, Button } from 'antd';
-import { MenuOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { MenuOutlined, ArrowUpOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { WebSocketProvider } from './contexts/WebSocketContext';
 import NavBar from './pages/NavBar';
@@ -22,7 +22,7 @@ import './App.css'; // Make sure to import the CSS file
 const { Content, Sider, Header } = Layout;
 
 const AppLayout = () => {
-    const { token } = useAuth();
+    const { token, logout } = useAuth();
     const location = useLocation();
     const [isMobile, setIsMobile] = useState(false);
     const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -67,6 +67,11 @@ const AppLayout = () => {
                                 onClick={() => setSidebarVisible(true)}
                             />
                             <NavBar />
+                             <Button
+                                className="mobile-menu-btn"
+                                icon={<LogoutOutlined />}
+                                onClick={logout}
+                            />
                         </Header>
                         <Drawer
                             title="Navigation"
@@ -146,7 +151,6 @@ const AppLayout = () => {
                     <Route path="*" element={<Navigate to={token ? "/dashboard" : "/"} />} />
                 </Routes>
             </Content>
-            <Footer />
             {scrolled && location.pathname === '/' && (
                 <FloatButton
                     className="scroll-to-top"

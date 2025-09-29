@@ -1,13 +1,15 @@
 import React from 'react';
-import { Menu } from 'antd';
+import { Menu, Button } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import {
   DashboardOutlined,
   HddOutlined,
   AreaChartOutlined,
   AlertOutlined,
-  ExperimentOutlined
+  ExperimentOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
+import { useAuth } from '../contexts/AuthContext';
 
 const items = [
     { key: '/dashboard', icon: <DashboardOutlined />, label: <Link to="/dashboard">Dashboard</Link> },
@@ -19,15 +21,29 @@ const items = [
 
 const Sidebar = () => {
   const location = useLocation();
+  const { logout } = useAuth();
 
   return (
-    <Menu
-      theme="dark"
-      mode="inline"
-      selectedKeys={[location.pathname]}
-      items={items}
-      style={{ height: '100%', borderRight: 0 }}
-    />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Menu
+        theme="dark"
+        mode="inline"
+        selectedKeys={[location.pathname]}
+        items={items}
+        style={{ flex: 1, borderRight: 0 }}
+      />
+      <div style={{ padding: '16px', marginTop: 'auto' }}>
+        <Button
+          type="primary"
+          danger
+          icon={<LogoutOutlined />}
+          onClick={logout}
+          style={{ width: '100%' }}
+        >
+          Logout
+        </Button>
+      </div>
+    </div>
   );
 };
 
