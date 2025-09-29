@@ -37,7 +37,8 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  // Initialize token from localStorage. null if not found.
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,22 +54,31 @@ export const AuthProvider = ({ children }) => {
                 const userData = { email: decodedPayload.sub };
                 setUser(userData);
                 localStorage.setItem('user', JSON.stringify(userData));
+            } else {
+              // Handle case where token is present but invalid
+              logout();
             }
         }
       } catch (error) {
-        console.error("Failed to parse user from localStorage", error);
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        setToken(null);
-        setUser(null);
+        console.error("Failed to parse user from localStorage or decode token", error);
+        logout();
       }
+    } else {
+      // Ensure axios header is cleared if no token
+      delete api.defaults.headers.common["Authorization"];
     }
   }, [token]);
 
   const login = async (credentials) => {
     try {
-      const { data } = await api.post("/api/auth/authenticate", credentials);
-      const tokenString = data.token;
+      // The backend expects "username", but the form provides "email".
+      // We map it here.
+      const authRequest = {
+        username: credentials.email,
+        password: credentials.password
+      };
+      
+      const { data: tokenString } = await api.post("/api/auth/authenticate", authRequest);
       
       if (typeof tokenString === 'string' && tokenString.length > 0) {
         const decodedPayload = decodeToken(tokenString);
@@ -92,21 +102,24 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      message.error("Login Failed: Invalid credentials or server error.");
+      const errorMessage = error.response?.data?.message || "Invalid credentials or server error.";
+      message.error(`Login Failed: ${errorMessage}`);
       return false;
     }
   };
 
   const register = async (credentials) => {
     try {
-        const registerCredentials = {
-            email: credentials.email,
+        // The backend expects "username" for registration as well.
+        const registerRequest = {
+            username: credentials.email,
             password: credentials.password
         };
-        await api.post("/api/auth/register", registerCredentials);
-        message.success("Registration Successful! Logging you in...");
-        // Automatically log in after successful registration
-        return await login(registerCredentials);
+        await api.post("/api/auth/register", registerRequest);
+        message.success("Registration Successful! Please log in.");
+        // Redirect to login page after successful registration
+        navigate("/login");
+        return true;
     } catch (error) {
         // Display the specific error message from the backend if available
         const errorMessage = error.response?.data?.message || error.response?.data || "Email might already be in use.";
@@ -122,7 +135,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     message.info("Logged Out");
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -133,4 +146,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
