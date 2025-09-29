@@ -99,10 +99,14 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (credentials) => {
     try {
-        await api.post("/api/auth/register", credentials);
+        const registerCredentials = {
+            email: credentials.email,
+            password: credentials.password
+        };
+        await api.post("/api/auth/register", registerCredentials);
         message.success("Registration Successful! Logging you in...");
         // Automatically log in after successful registration
-        return await login(credentials);
+        return await login(registerCredentials);
     } catch (error) {
         // Display the specific error message from the backend if available
         const errorMessage = error.response?.data?.message || error.response?.data || "Email might already be in use.";
@@ -129,3 +133,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

@@ -21,6 +21,41 @@ import './App.css'; // Make sure to import the CSS file
 
 const { Content, Sider, Header } = Layout;
 
+const AppRoutes = () => {
+    const { token } = useAuth();
+    const location = useLocation();
+
+    const publicPaths = ['/', '/login', '/register'];
+    const isPublicPath = publicPaths.includes(location.pathname);
+
+    if (token && isPublicPath) {
+        return <Navigate to="/dashboard" />;
+    }
+
+    if (token) {
+        return (
+            <Routes>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/devices" element={<DevicesPage />} />
+                <Route path="/sensors" element={<SensorDataPage />} />
+                <Route path="/anomalies" element={<AnomaliesPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="*" element={<Navigate to="/dashboard" />} />
+            </Routes>
+        )
+    }
+
+    return (
+        <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+    )
+}
+
+
 const AppLayout = () => {
     const { token, logout } = useAuth();
     const location = useLocation();
@@ -54,9 +89,11 @@ const AppLayout = () => {
     const publicPaths = ['/', '/login', '/register'];
     const isPublicPath = publicPaths.includes(location.pathname);
 
+
     if (token && !isPublicPath) {
+        // Authenticated Layout
         return (
-            <Layout style={{ minHeight: '100vh' }}>
+             <Layout style={{ minHeight: '100vh' }}>
                 {isMobile ? (
                     // Mobile Layout
                     <Layout>
@@ -87,14 +124,7 @@ const AppLayout = () => {
                         </Drawer>
                         <Content className="main-content">
                             <div className="content-wrapper">
-                                <Routes>
-                                    <Route path="/dashboard" element={<DashboardPage />} />
-                                    <Route path="/devices" element={<DevicesPage />} />
-                                    <Route path="/sensors" element={<SensorDataPage />} />
-                                    <Route path="/anomalies" element={<AnomaliesPage />} />
-                                    <Route path="/analytics" element={<AnalyticsPage />} />
-                                    <Route path="*" element={<Navigate to="/dashboard" />} />
-                                </Routes>
+                               <AppRoutes />
                             </div>
                         </Content>
                         <Footer />
@@ -112,14 +142,7 @@ const AppLayout = () => {
                             <Layout className="desktop-content-layout">
                                 <Content>
                                     <div className="content-wrapper">
-                                        <Routes>
-                                            <Route path="/dashboard" element={<DashboardPage />} />
-                                            <Route path="/devices" element={<DevicesPage />} />
-                                            <Route path="/sensors" element={<SensorDataPage />} />
-                                            <Route path="/anomalies" element={<AnomaliesPage />} />
-                                            <Route path="/analytics" element={<AnalyticsPage />} />
-                                            <Route path="*" element={<Navigate to="/dashboard" />} />
-                                        </Routes>
+                                        <AppRoutes />
                                     </div>
                                 </Content>
                                 <Footer />
@@ -141,16 +164,12 @@ const AppLayout = () => {
 
     // Public Pages Layout
     return (
-        <Layout style={{ minHeight: '100vh' }}>
-            <NavBar />
+        <Layout style={{ minHeight: '100vh', background: '#0f172a' }}>
+           {!isMobile && <NavBar />}
             <Content>
-                <Routes>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="*" element={<Navigate to={token ? "/dashboard" : "/"} />} />
-                </Routes>
+                <AppRoutes />
             </Content>
+             {!isMobile && <Footer />}
             {scrolled && location.pathname === '/' && (
                 <FloatButton
                     className="scroll-to-top"
@@ -190,3 +209,4 @@ function App() {
 }
 
 export default App;
+
